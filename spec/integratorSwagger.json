@@ -1,0 +1,283 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Integrator API",
+        "description": "API da integração entre ERP e Marketplace, utilizando eventos para sincronização de dados.",
+        "version": "1.0.0"
+    },
+    "host": "api.integrator.com",
+    "basePath": "/v1",
+    "schemes": [
+        "https",
+        "http"
+    ],
+    "paths": {
+        "/products": {
+            "post": {
+                "summary": "Criar produto",
+                "description": "Recebe produto do ERP.",
+                "operationId": "addProduct",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "requestBody",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Product"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Produto criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Requisição inválida"
+                    }
+                }
+            }
+        },
+        "/payments": {
+            "post": {
+                "summary": "Registrar pagamento",
+                "description": "Recebe pagamento do ERP.",
+                "operationId": "addPayment",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "requestBody",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Payment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Pagamento registrado com sucesso"
+                    },
+                    "400": {
+                        "description": "Requisição inválida"
+                    }
+                }
+            }
+        },
+        "/orders": {
+            "post": {
+                "summary": "Processar pedido",
+                "description": "Recebe pedido do Marketplace.",
+                "operationId": "addOrder",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "requestBody",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Order"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Pedido processado com sucesso"
+                    },
+                    "400": {
+                        "description": "Requisição inválida"
+                    }
+                }
+            }
+        },
+        "/customers": {
+            "post": {
+                "summary": "Registrar cliente",
+                "description": "Recebe pedido do Marketplace.",
+                "operationId": "addCustomer",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "requestBody",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Customer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Cliente registrado com sucesso"
+                    },
+                    "400": {
+                        "description": "Requisição inválida"
+                    }
+                }
+            }
+        },
+        "/shipments": {
+            "post": {
+                "summary": "Criar envio",
+                "description": "Recebe envio do ERP.",
+                "operationId": "addShipment",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "requestBody",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Shipment"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Envio criado com sucesso"
+                    },
+                    "400": {
+                        "description": "Requisição inválida"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Product": {
+            "type": "object",
+            "properties": {
+                "productId": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "category": {
+                    "type": "string"
+                }
+            }
+        },
+        "Payment": {
+            "type": "object",
+            "properties": {
+                "paymentId": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "amount": {
+                    "type": "number",
+                    "format": "float"
+                },
+                "paymentMethod": {
+                    "type": "string",
+                    "enum": [
+                        "credit_card",
+                        "boleto",
+                        "pix",
+                        "paypal"
+                    ]
+                },
+                "paymentDate": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "pending",
+                        "approved",
+                        "rejected"
+                    ]
+                }
+            }
+        },
+        "Shipment": {
+            "type": "object",
+            "properties": {
+                "shipmentId": {
+                    "type": "string"
+                },
+                "orderId": {
+                    "type": "string"
+                },
+                "carrier": {
+                    "type": "string"
+                },
+                "trackingNumber": {
+                    "type": "string"
+                },
+                "shipmentDate": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Order": {
+            "type": "object",
+            "properties": {
+                "order_id": {
+                    "type": "string"
+                },
+                "marketplace_order_id": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "processed",
+                        "canceled"
+                    ]
+                },
+                "shipping_date": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            }
+        },
+        "Customer": {
+            "type": "object",
+            "properties": {
+                "marketplace_customer_id": {
+                    "type": "string"
+                },
+                "customer_id": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "status": {
+                    "type": "string",
+                    "enum": [
+                        "registered",
+                        "pending"
+                    ]
+                }
+            }
+        }
+    }
+}
